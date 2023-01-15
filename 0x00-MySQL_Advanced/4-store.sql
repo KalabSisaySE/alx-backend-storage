@@ -1,8 +1,6 @@
 -- creates a trigger that decreases the quantity of an item
 -- after adding a new order
 
-USE holberton;
-
 CREATE TRIGGER `items_INS`
 AFTER INSERT
 ON `orders` FOR EACH ROW
