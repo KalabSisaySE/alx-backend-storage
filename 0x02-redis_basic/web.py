@@ -15,14 +15,6 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-    def get(self, key: str, fn: Callable = None) -> Any:
-        """retrives value from database using `key`"""
-        data = self._redis.get(key)
-        if data:
-            if fn:
-                return fn(data)
-            return data
-
 
 cache = Cache()
 
@@ -31,7 +23,7 @@ def get_page(url: str) -> str:
     """returns the content of the `url`
     tracks the number of times a particular url was accessed
     """
-    name = 'count:{' + url + '}'
+    name = "count:{}".format(url)
     if cache._redis.get(name=name):
         cache._redis.incr(name, 1)
     else:
