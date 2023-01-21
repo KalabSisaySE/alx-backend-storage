@@ -23,6 +23,7 @@ def get_page(url: str) -> str:
     """returns the content of the `url`
     tracks the number of times a particular url was accessed
     """
+    cache._redis.incr('Count', 1)
     name = "count:{}".format(url)
     if cache._redis.get(name=name):
         cache._redis.incr(name, 1)
