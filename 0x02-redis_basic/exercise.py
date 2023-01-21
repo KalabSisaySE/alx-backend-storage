@@ -25,12 +25,12 @@ def call_history(method: Callable) -> Callable:
     """decorator that saves the history of a function call"""
 
     @wraps(method)
-    def wrapper(self, data):
+    def wrapper(self, *args):
         """saves inputs and outputs on the function call in two redis lists"""
         inputs = method.__qualname__ + ":inputs"
         outputs = method.__qualname__ + ":outputs"
-        self._redis.rpush(inputs, str(data))
-        output = method(self, data)
+        self._redis.rpush(inputs, str(args))
+        output = method(self, *args)
         self._redis.rpush(outputs, output)
         return output
 
