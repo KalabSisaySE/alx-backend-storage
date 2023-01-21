@@ -205,7 +205,13 @@ Bonus: implement this use case with decorators.
 
 ### Links
 
-- [Redis commands](https://redis.io/commands/)
-- [Redis python client](https://redis-py.readthedocs.io/en/stable/)
-- [How to Use Redis With Python](https://realpython.com/python-redis/)
-- [Redis Crash Course Tutorial](https://www.youtube.com/watch?v=Hbt56gFj998)
+- #### Main
+
+  - [Redis commands](https://redis.io/commands/)
+  - [Redis python client](https://redis-py.readthedocs.io/en/stable/)
+  - [How to Use Redis With Python](https://realpython.com/python-redis/)
+  - [Redis Crash Course Tutorial](https://www.youtube.com/watch?v=Hbt56gFj998)
+
+- #### Extra
+
+  - [decorators](https://docs.python.org/3.7/library/functools.html#functools.wraps)
