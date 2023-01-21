@@ -12,11 +12,11 @@ def count_calls(method: Callable) -> Callable:
     """a decorator that will count the number of times a method is called"""
 
     @wraps(method)
-    def wrapper(self, data):
+    def wrapper(self, *args):
         """increments the key(function name) everytime it is called"""
         name = method.__qualname__
         self._redis.incr(name, 1)
-        return method(self, data)
+        return method(self, *args)
 
     return wrapper
 
@@ -68,3 +68,26 @@ class Cache:
     def get_int(self, byte):
         """returns int conversion of `byte`"""
         return int(byte)
+
+    def replay(self, fn_name):
+        """displays the history of calls for a particular function"""
+        inputs = fn_name.__qualname__ + ":inputs"
+        outputs = fn_name.__qualname__ + ":outputs"
+        inp_list = self._redis.lrange(inputs, 0, -1)
+        out_list = self._redis.lrange(outputs, 0, -1)
+
+        print(
+            "{} was called {} times".format(
+                fn_name.__qualname__,
+                len(inp_list)
+            )
+        )
+
+        for inp, out in zip(inp_list, out_list):
+            print(
+                "{}(*{}) -> {}".format(
+                    fn_name.__qualname__,
+                    inp.decode("utf-8"),
+                    out.decode("utf-8")
+                )
+            )
