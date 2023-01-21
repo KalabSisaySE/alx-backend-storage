@@ -18,10 +18,24 @@ class Cache:
 cache = Cache()
 
 
+def count_call(method: Callable) -> Callable:
+    """decorator counts the number of call to a url for 10 secs"""
+
+    @wraps(method)
+    def wrapper(url):
+        """counts the number of calls for the `url`"""
+        result = method(url)
+        cache._redis.set(url, result, 10)
+        name = "count:" + url
+        cache._redis.incr(name, 1)
+        return result
+
+    return wrapper
+
+
+@count_call
 def get_page(url: str) -> str:
     """returns the content of the `url`
     tracks the number of times a particular url was accessed
     """
-    cache._redis.set(url, requests.get(url).text, 10)
-    name = "count:{}".format(url)
-    cache._redis.incr(name, 1)
+    return requests.get(url).text
