@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """the `exercise.py` module
 defines the class `Cache`
 """
@@ -13,9 +13,9 @@ class Cache:
     def __init__(self) -> None:
         """sets redis.Redis to a variale and flushes the db"""
         self._redis = redis.Redis()
-        self._redis.flushdb
+        self._redis.flushdb()
 
-    def store(self, data: Union[int, bytes, str, int, float]) -> str:
+    def store(self, data: Union[int, bytes, str, float]) -> str:
         """stores a random string in a key and returns the key"""
         key = str(uuid4())
         self._redis.set(key, data)
