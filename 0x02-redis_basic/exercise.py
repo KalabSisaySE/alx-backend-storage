@@ -36,6 +36,28 @@ def call_history(method: Callable) -> Callable:
 
     return wrapper
 
+def replay(fn_name):
+    """displays the history of calls for a particular function"""
+    inputs = fn_name.__qualname__ + ":inputs"
+    outputs = fn_name.__qualname__ + ":outputs"
+    inp_list = redis.Redis().lrange(inputs, 0, -1)
+    out_list = redis.Redis().lrange(outputs, 0, -1)
+
+    print(
+        "{} was called {} times".format(
+            fn_name.__qualname__,
+            len(inp_list)
+        )
+    )
+
+    for inp, out in zip(inp_list, out_list):
+        print(
+            "{}(*{}) -> {}".format(
+                fn_name.__qualname__,
+                inp.decode("utf-8"),
+                out.decode("utf-8")
+            )
+        )
 
 class Cache:
     """stores data in redis"""
@@ -68,26 +90,3 @@ class Cache:
     def get_int(self, byte):
         """returns int conversion of `byte`"""
         return int(byte)
-
-    def replay(self, fn_name):
-        """displays the history of calls for a particular function"""
-        inputs = fn_name.__qualname__ + ":inputs"
-        outputs = fn_name.__qualname__ + ":outputs"
-        inp_list = self._redis.lrange(inputs, 0, -1)
-        out_list = self._redis.lrange(outputs, 0, -1)
-
-        print(
-            "{} was called {} times".format(
-                fn_name.__qualname__,
-                len(inp_list)
-            )
-        )
-
-        for inp, out in zip(inp_list, out_list):
-            print(
-                "{}(*{}) -> {}".format(
-                    fn_name.__qualname__,
-                    inp.decode("utf-8"),
-                    out.decode("utf-8")
-                )
-            )
