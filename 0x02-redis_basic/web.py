@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """the web.py module
 defines the funtion `get_page`
 """
@@ -29,11 +29,10 @@ cache = Cache()
 
 def count_call(method: Callable) -> Callable:
     """decorator counts the number of call to a url for 10 secs"""
-
     @wraps(method)
     def wrapper(url):
         """counts the number of calls for the `url`"""
-        name = "count:{}".format(url)
+        name = 'count:{' + url + '}'
         if cache._redis.get(name=name):
             cache._redis.incr(name, 1)
         else:
@@ -48,5 +47,4 @@ def get_page(url: str) -> str:
     """returns the content of the `url`
     tracks the number of times a particular url was accessed
     """
-    response = requests.get(url)
-    return response.text
+    return requests.get(url).text
