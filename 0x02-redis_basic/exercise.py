@@ -9,14 +9,30 @@ from uuid import uuid4
 
 
 def count_calls(method: Callable) -> Callable:
-    """a decorater that will count the number of times a method is called"""
+    """a decorator that will count the number of times a method is called"""
 
     @wraps(method)
     def wrapper(self, data):
-        """"""
+        """increments the key(function name) everytime it is called"""
         name = method.__qualname__
         self._redis.incr(name, 1)
         return method(self, data)
+
+    return wrapper
+
+
+def call_history(method: Callable) -> Callable:
+    """decorator that saves the history of a function call"""
+
+    @wraps(method)
+    def wrapper(self, data):
+        """saves inputs and outputs on the function call in two redis lists"""
+        inputs = method.__qualname__ + ":inputs"
+        outputs = method.__qualname__ + ":outputs"
+        self._redis.rpush(inputs, str(data))
+        output = method(self, data)
+        self._redis.rpush(outputs, output)
+        return output
 
     return wrapper
 
@@ -30,6 +46,7 @@ class Cache:
         self._redis.flushdb()
 
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores `data` (value) in a random string key and returns the key"""
         key = str(uuid4())
