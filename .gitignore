@@ -1,2 +1,7 @@
+*main*.py
+__pycache__
+*.rdb
+*test*
+tmp_res
 test.sql
 *init.sql
