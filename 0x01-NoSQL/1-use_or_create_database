@@ -1,0 +1,2 @@
+// switches to a db or creates it if id doesnot exists
+use my_db
