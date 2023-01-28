@@ -1,2 +1,4 @@
 // lists all the databases
+sudo service mongod start
 show databases
+sudo service mongod stop
